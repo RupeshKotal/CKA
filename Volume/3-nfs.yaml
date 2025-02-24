@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    app: nginx
+    env: prod
+spec:
+   replicas: 3
+   selector:
+      matchLabels:
+        app: nginx
+        env: prod
+   template:
+     metadata:
+       name: nginx-pod
+       labels:
+         app: nginx
+         env: prod
+     spec:
+       containers:
+         - name: write-container
+           image: alpine
+           command: ["/bin/sh"]
+           args: ["-c", "while true;do date >> /var/log/index.html; sleep;done"]
+           volumeMounts:
+             - name: shared-vol
+               mountPath: /var/log
+       volumes:
+        - name: shared-vol
+          nfs:
+            server: 44.212.32.219
+            path: /var/nfs
+            #readOnly: true
+          

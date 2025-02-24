@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  labels:
+    app: nginx
+    env: prod
+spec:
+  containers:
+   - name: my-pod
+     image: nginx:latest
+     ports:
+        - name: nginx
+          containerPort: 80
+          protocol: TCP
+     volumeMounts:
+       - name: nginx-mount
+         mountPath: /var/www/html   #DirectoryOrCreate
+       - name: file-mount           
+         mountPath: /var/www/index.html  #FileOrCreate
+  volumes:
+    - name: nginx-mount
+      hostPath: 
+        path: /var/tmp/nginx-data
+        type: DirectoryOrCreate   #DirectoryOrCreate, Directory, 
+    - name: file-mount
+      hostPath: 
+        path: /var/tmp/index.html   #FileOrCreate, File
+        type: FileOrCreate

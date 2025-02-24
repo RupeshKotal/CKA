@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: nginx
+  labels:
+    app: frontend
+spec:
+  containers:
+   - name: my-nginx
+     image: nginx
+     ports:
+     - containerPort: 80
+     volumeMounts:
+      - name: shared-vol
+        mountPath: /usr/share/nginx/html
+     resources:
+       requests:
+         cpu: "0.1"
+         memory: "100Mi"
+       limits:
+         cpu: "0.4"
+         memory: "400Mi"
+  initContainers:
+    - name: alpine-init
+      image: alpine
+      command:
+        - wget
+        - "-O"
+        - "/var/tmp/index.html"
+        - "https://raw.githubusercontent.com/RupeshKotal/maven-web-app/refs/heads/master/src/main/webapp/index.jsp?raw=true"
+      volumeMounts:
+       - name: shared-vol
+         mountPath: /var/tmp
+  volumes:
+  - name: shared-vol
+    emptyDir: {}
